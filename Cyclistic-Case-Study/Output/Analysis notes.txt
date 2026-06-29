@@ -1,0 +1,485 @@
+CYCLISTIC CASE STUDY
+
+=================================================
+SCRIPT 01 - LOAD DATA
+=================================================
+
+Objective:
+Load the dataset and inspect its structure.
+
+Actions:
+- Imported pandas.
+- Loaded 202605-divvy-tripdata.csv.
+- Viewed dataset shape.
+- Viewed column names.
+- Viewed first five rows.
+
+Findings:
+- Dataset contains 653,704 rows.
+- Dataset contains 13 columns.
+- Key columns include:
+  ride_id
+  rideable_type
+  started_at
+  ended_at
+  member_casual
+
+Observation:
+Dataset contains information needed to compare member and casual riders.
+
+=================================================
+SCRIPT 02 - DATA QUALITY CHECK
+=================================================
+
+Objective:
+Assess data quality before analysis.
+
+Actions:
+- Checked for missing values.
+- Checked for duplicate records.
+- Reviewed rider categories.
+
+Findings:
+- Missing values exist in some station fields.
+- Critical fields are present.
+- Rider categories include:
+  member
+  casual
+
+Observation:
+Data quality is sufficient for analysis.
+
+=================================================
+SCRIPT 03 - FEATURE ENGINEERING
+=================================================
+
+Objective:
+Create variables useful for business analysis.
+
+Actions:
+- Converted started_at to datetime.
+- Converted ended_at to datetime.
+- Created ride_length.
+- Created day_of_week.
+- Created month.
+- Created hour.
+
+New Features:
+- ride_length
+- day_of_week
+- month
+- hour
+
+Ride Length Summary:
+
+Count: 653,704
+Mean: 16.03 minutes
+Median: 9.56 minutes
+Minimum: 0.0017 minutes
+Maximum: 1499.97 minutes
+
+Observation:
+Ride duration distribution appears highly skewed.
+Several extreme values may be affecting the average.
+
+=================================================
+SCRIPT 04 - DATA CLEANING
+=================================================
+
+Objective:
+Remove implausible ride durations.
+
+Cleaning Rules:
+- Removed rides shorter than 1 minute.
+- Removed rides longer than 24 hours.
+
+Results:
+
+Rows Before Cleaning:
+653,704
+
+Rows After Cleaning:
+635,362
+
+Records Removed:
+18,342
+
+Ride Length Summary After Cleaning:
+
+Mean: 15.13 minutes
+Median: 9.82 minutes
+Minimum: 1.00 minute
+Maximum: 1439.46 minutes
+
+Observation:
+Extreme ride durations inflated the average ride length.
+Cleaning improved data reliability.
+
+=================================================
+SCRIPT 05 - MEMBER VS CASUAL DURATION
+=================================================
+
+Objective:
+Compare ride duration between members and casual riders.
+
+Pre-Analysis Hypothesis:
+
+Members may use Cyclistic primarily for commuting and transportation purposes.
+
+Casual riders may use Cyclistic for leisure and recreational activities.
+
+If this assumption is correct, casual riders should have longer ride durations than members.
+
+Method:
+Grouped cleaned data by member_casual and calculated:
+- Count
+- Mean
+- Median
+- Min
+- Max
+
+Results:
+
+Casual Riders
+Count: 235,846
+Mean Ride Length: 19.69 minutes
+Median Ride Length: 11.81 minutes
+
+Members
+Count: 399,516
+Mean Ride Length: 12.43 minutes
+Median Ride Length: 8.87 minutes
+
+Outcome:
+
+The hypothesis was supported.
+
+Casual riders take significantly longer trips than members.
+
+The average casual ride is approximately 58% longer than the average member ride.
+
+Business Interpretation:
+
+Member behaviour suggests commuting and utility-based travel.
+
+Casual rider behaviour suggests leisure and recreational use.
+
+=================================================
+SCRIPT 06 - DAY OF WEEK ANALYSIS
+=================================================
+
+Objective:
+Compare riding behaviour across days of the week.
+
+Pre-Analysis Hypothesis:
+
+Members may ride more frequently during weekdays due to commuting behaviour.
+
+Casual riders may ride more frequently during weekends when people have more leisure time.
+
+Method:
+Grouped rides by:
+- member_casual
+- day_of_week
+
+Calculated:
+- Ride count
+
+Results:
+
+Casual Riders
+
+Monday: 31,068
+Tuesday: 23,020
+Wednesday: 23,522
+Thursday: 23,108
+Friday: 35,402
+Saturday: 55,865
+Sunday: 43,861
+
+Members
+
+Monday: 50,860
+Tuesday: 55,791
+Wednesday: 59,389
+Thursday: 57,254
+Friday: 64,670
+Saturday: 60,681
+Sunday: 50,871
+
+Outcome:
+
+The hypothesis was partially supported.
+
+Casual riders demonstrate a strong weekend usage pattern.
+
+Saturday recorded the highest number of casual rider trips.
+
+Members showed consistently high usage throughout the week rather than a strong weekday-only pattern.
+
+Business Interpretation:
+
+Casual riders appear to use Cyclistic primarily for recreational and leisure activities.
+
+Members appear to integrate Cyclistic into their regular routines and transportation habits rather than using it solely for commuting.
+
+=================================================
+SCRIPT 07 - BIKE TYPE ANALYSIS
+=================================================
+
+Objective:
+Compare bike type usage between members and casual riders.
+
+Pre-Analysis Hypothesis:
+
+Members may prefer electric bikes because they are more likely to use Cyclistic for transportation and commuting purposes.
+
+Electric bikes may provide greater convenience and require less physical effort.
+
+Casual riders may show greater use of classic bikes because recreational riders may value the cycling experience itself and may be more likely to use bikes on scenic or leisure-focused trips.
+
+Method:
+Grouped rides by:
+- member_casual
+- rideable_type
+
+Calculated:
+- Ride count
+- Approximate usage percentages
+
+Results:
+
+Members
+
+Electric Bike: 270,041 rides
+Classic Bike: 129,475 rides
+
+Electric Usage Rate: 67.6%
+Classic Usage Rate: 32.4%
+
+Casual Riders
+
+Electric Bike: 169,932 rides
+Classic Bike: 65,914 rides
+
+Electric Usage Rate: 72.0%
+Classic Usage Rate: 28.0%
+
+Outcome:
+
+The hypothesis was not supported.
+
+Both rider groups showed a strong preference for electric bikes.
+
+Unexpectedly, casual riders used electric bikes slightly more frequently than members.
+
+Business Interpretation:
+
+Electric bikes appear to be attractive to both rider groups.
+
+Convenience and ease of use may be important factors regardless of rider type.
+
+However, usage alone does not prove preference.
+
+Bike availability, station distribution, and fleet composition may also influence bike selection.
+
+
+=================================================
+SCRIPT 08 - HOUR OF DAY ANALYSIS
+=================================================
+
+Objective:
+Compare riding behaviour by hour of day.
+
+Pre-Analysis Hypothesis:
+
+Members may show peak activity during traditional commuting hours.
+
+If observed, this would support the hypothesis that members use Cyclistic as part of their transportation routine.
+
+Casual riders may display a more evenly distributed pattern throughout the day.
+
+Method:
+
+- Created hour variable from started_at.
+- Grouped rides by:
+  - member_casual
+  - hour
+- Counted rides.
+
+Results:
+
+Members showed clear peaks during:
+
+Morning:
+- 07:00
+- 08:00
+
+Evening:
+- 16:00
+- 17:00
+- 18:00
+
+Highest member activity:
+17:00 (42,459 rides)
+
+Casual riders showed a gradual increase throughout the day.
+
+Highest casual activity:
+17:00 (22,856 rides)
+
+Outcome:
+
+The hypothesis was strongly supported.
+
+Members demonstrate a riding pattern that closely aligns with traditional commuting hours.
+
+Casual riders show a broader usage pattern with activity increasing steadily throughout the day.
+
+Business Interpretation:
+
+Member behaviour provides strong evidence that Cyclistic is used as a transportation tool.
+
+Casual rider behaviour appears more flexible and leisure-oriented.
+
+The hourly riding pattern provides stronger support for the commuting hypothesis than the day-of-week analysis alone.
+
+=================================================
+SCRIPT 09 - MASTER DATASET CREATION
+=================================================
+
+Objective:
+Create a cleaned and feature-engineered dataset for future analysis.
+
+Features Included:
+- ride_length
+- day_of_week
+- hour
+- month
+
+Cleaning Rules:
+- Removed rides shorter than 1 minute.
+- Removed rides longer than 24 hours.
+
+Output:
+output/cyclistic_cleaned.csv
+
+Outcome:
+
+Created a reusable master dataset containing cleaned records and engineered features.
+
+Future analyses can be performed directly on this dataset without repeating the cleaning and transformation steps.
+
+=================================================
+SCRIPT 10 - TIME OF DAY ANALYSIS
+=================================================
+
+Objective:
+Compare riding behaviour across broad time periods of the day.
+
+Pre-Analysis Hypothesis:
+
+Members may be more active during morning and evening periods due to commuting behaviour.
+
+Casual riders may be more active during the afternoon and evening periods due to leisure and recreational usage.
+
+Method:
+
+Grouped rides by:
+- member_casual
+- time_of_day
+
+Calculated:
+- Ride count
+
+Results:
+
+Casual Riders
+
+Morning: 45,190
+Afternoon: 88,929
+Evening: 77,307
+Night: 24,433
+
+Members
+
+Morning: 114,203
+Afternoon: 129,988
+Evening: 130,935
+Night: 24,413
+
+Outcome:
+
+The hypothesis was supported.
+
+Casual riders show stronger afternoon and evening usage than morning usage.
+
+Members demonstrate high activity throughout the day, with particularly strong afternoon and evening usage.
+
+Business Interpretation:
+
+Casual rider behaviour remains consistent with leisure and recreational travel patterns.
+
+Member riders show patterns consistent with transportation and routine usage, although their activity extends beyond traditional commuting periods.
+
+The results support previous findings from the hour-of-day analysis while providing a simpler view for business stakeholders.
+
+
+=================================================
+CURRENT INSIGHTS
+=================================================
+
+1. The dataset is large and suitable for behavioural analysis, containing 653,704 ride records.
+
+2. Data cleaning was necessary due to implausible ride durations, including rides lasting less than one minute and rides exceeding 24 hours.
+
+3. A total of 18,342 anomalous records were removed, leaving 635,362 rides for analysis.
+
+4. Ride duration data is right-skewed. Most rides are relatively short, with a median duration of approximately 10 minutes; however, a smaller number of longer rides contribute to the overall average.
+
+5. Casual riders take significantly longer trips than members.
+   - Casual average ride length: 19.69 minutes
+   - Member average ride length: 12.43 minutes
+
+6. The hypothesis that casual riders take longer rides than members was supported.
+
+7. Casual riders show strong weekend usage patterns, particularly on Saturdays.
+
+8. The hypothesis that casual riders are more active on weekends was supported.
+
+9. Members demonstrate consistently high usage throughout the week rather than a strong weekday-only pattern.
+
+10. The hypothesis that members primarily ride during weekdays was only partially supported.
+
+11. Electric bikes are the most frequently used bike type among both rider groups.
+
+12. The hypothesis that casual riders may prefer classic bikes was not supported.
+
+13. Casual riders use electric bikes slightly more frequently than members when measured as a percentage of total rides.
+
+14. The analysis so far suggests that casual riders are more leisure-oriented, while members integrate Cyclistic more consistently into their regular transportation habits.
+
+15. Members display strong morning and evening commuting peaks, particularly at 08:00 and 17:00.
+
+16. The hour-of-day analysis provides strong evidence that members use Cyclistic as part of their regular transportation routine.
+
+17. Casual riders display a more gradual usage pattern throughout the day, consistent with leisure and discretionary travel.
+=================================================
+NEXT STEPS
+=================================================
+
+1. Analyse riding behaviour by hour of day.
+
+2. Identify peak riding hours for members and casual riders.
+
+3. Compare time-of-day usage patterns between rider groups.
+
+4. Create visualisations for ride duration, day-of-week usage, and bike type preferences.
+
+5. Identify the biggest behavioural differences between members and casual riders.
+
+6. Develop data-driven recommendations for converting casual riders into annual members.
+
+7. Build a final case study report summarising methodology, hypotheses, findings, insights, and recommendations.
+
+8. Create a presentation deck to communicate findings to stakeholders.
