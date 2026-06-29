@@ -61,7 +61,7 @@ README.md
 
 The Tableau dashboard summarises the key insights from the analysis.
 
-![Cyclistic Dashboard](images/dashboard.png)
+![Cyclistic Dashboard](Cyclistic-Case-Study/Images/Dashboard.png)
 
 
 
